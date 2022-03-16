@@ -1,9 +1,9 @@
-import express from 'express';
+import express from "express";
 const router = express.Router();
-import db from "../../../../../App/Infrastructure/Database/Models/index.js"
+import db from "../../../../../App/Infrastructure/Database/Models/index.js";
+import Auth from "../../../../Middleware/Auth.js";
 
-
-router.get("/fetch", async (req, res) => {
+router.get("/fetch", Auth, async (req, res) => {
   try {
     const todos = await db.Todo.findAll();
     res.send(todos);
@@ -13,7 +13,7 @@ router.get("/fetch", async (req, res) => {
   }
 });
 
-router.post("/create", async (req, res) => {
+router.post("/create", Auth, async (req, res) => {
   try {
     const todo = await db.Todo.create({
       text: req.body.text,
@@ -25,7 +25,7 @@ router.post("/create", async (req, res) => {
   }
 });
 
-router.get("/fetch/:id", async (req, res) => {
+router.get("/fetch/:id", Auth, async (req, res) => {
   try {
     const todo = await db.Todo.findOne({
       where: {
@@ -39,7 +39,7 @@ router.get("/fetch/:id", async (req, res) => {
   }
 });
 
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/delete/:id", Auth, async (req, res) => {
   try {
     await db.Todo.destroy({
       where: {
@@ -53,7 +53,7 @@ router.delete("/delete/:id", async (req, res) => {
   }
 });
 
-router.put("/update/:id", async (req, res) => {
+router.put("/update/:id", Auth, async (req, res) => {
   try {
     await db.Todo.update(
       {

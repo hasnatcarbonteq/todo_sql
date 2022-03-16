@@ -3,23 +3,22 @@ import db from "../../App/Infrastructure/Database/Models/index.js";
 
 const Auth = async (req, res, next) => {
   try {
-    const token = req.headers["authorization"];
-
+    let token = req.headers["authorization"];
+    token = token.split(" ")[1];
     if (!token) {
       return;
     }
 
-    const decode = await jwt.verify(token, "secret");
-    const user = await db.User.findByUserId(decode.id);
-
+    const decode = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const user = await db.User.findOne({where: {id: decode.id}});
     if (!user) {
       return;
     }
 
-    req.userInfo = user;
     return next();
   } catch (err) {
-      return err;
+    console.log(err)
+    return res.status(500).send(err);
   }
 };
 

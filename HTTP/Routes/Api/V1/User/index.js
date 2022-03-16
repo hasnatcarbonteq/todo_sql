@@ -3,8 +3,38 @@ const router = express.Router();
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import db from "../../../../../App/Infrastructure/Database/Models/index.js";
+import {server} from "../../../../../App/Infrastructure/Config/index.js";
 
-router.get("/login", async (req, res) => {
+router.post("/login", async (req, res) => {
+  const {email, password} = req.body;
+  try {
+    const user = await db.User.scope('withPassword').findOne({
+      where: {
+        email
+      }
+    });
+    if (!user) {
+      return res.status(401).json({
+        message: "Auth failed"
+      });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({
+        message: "Auth failed"
+      });
+    }
+    const token = jwt.sign({id: user.id}, process.env.JWT_SECRET_KEY, {
+      expiresIn: "12h"
+    });
+    res.status(200).json({
+      message: "Auth successful",
+      token
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send('Server Error');
+  }
   
 });
 
