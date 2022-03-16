@@ -3,13 +3,13 @@
 import fs from "fs";
 import path from "path";
 import Sequelize from "sequelize";
-import { database } from "../../Config/index.js";
+import { database, server } from "../../Config/index.js";
 import { URL } from "url";
 
 const __filename = new URL("", import.meta.url).pathname;
 const __dirname = new URL(".", import.meta.url).pathname;
 
-const env = process.env.NODE_ENV || "development";
+const env = server.NODE_ENV || "development";
 const config = database[env];
 const db = {};
 const basename = path.basename(__filename);

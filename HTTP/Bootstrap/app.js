@@ -11,7 +11,6 @@ const __dirname = new URL('.', import.meta.url).pathname;
 
 
 dotenv.config();
-// const List = require("../Routes/Api/V1/List");
 
 const app = express();
 const apiV1 = '/api/v1';
