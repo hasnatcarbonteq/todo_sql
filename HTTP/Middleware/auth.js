@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import db from "../../App/Infrastructure/Database/Models/index.js";
+import {server} from "../../App/Infrastructure/Config/index.js";
 
 const Auth = async (req, res, next) => {
   try {
@@ -9,7 +10,7 @@ const Auth = async (req, res, next) => {
       return;
     }
 
-    const decode = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const decode = jwt.verify(token, server.SECRET);
     const user = await db.User.findOne({where: {id: decode.id}});
     if (!user) {
       return;
